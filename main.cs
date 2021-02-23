@@ -4,12 +4,12 @@ using System.Collections.Generic;
 namespace Tictactoe {
 	class Game {
 		private const int NUM_SQUARES = 9;
-        private const char EMPTY = ' ';
-        private const char DRAW = 'D';
-        private const char NO_ONE = ' ';
-        
-        public static void PrintInstructions() {
-            System.Console.WriteLine("Welcome to the game. To declare your move, you" +
+    private const char EMPTY = ' ';
+    private const char DRAW = 'D';
+    private const char NO_ONE = ' ';
+
+    public static void PrintInstructions() {
+      System.Console.WriteLine("Welcome to the game. To declare your move, you" +
 									 " should enter a number [1 - 9], like so: ");
 			System.Console.WriteLine("\t1 | 2 | 3");
 			System.Console.WriteLine("\t---------");
@@ -22,12 +22,12 @@ namespace Tictactoe {
 		public static char GetMoveOrder() {
 			System.Console.WriteLine("Do you want to move first? (enter y/n)");
 			ConsoleKeyInfo yn = System.Console.ReadKey();
-			
+
 			while (yn.Key != ConsoleKey.Y && yn.Key != ConsoleKey.N) {
 				System.Console.WriteLine("\nYou entered neither y nor n. Please enter the key again");
 				yn = System.Console.ReadKey();
 			}
-			
+
 			if (yn.Key == ConsoleKey.Y) {
 				return 'X';
 			}
@@ -44,7 +44,7 @@ namespace Tictactoe {
 			System.Console.WriteLine("\t4 | 5 | 6");
 			System.Console.WriteLine("\t---------");
 			System.Console.WriteLine("\t7 | 8 | 9\n\n\n");
-			
+
 			System.Console.WriteLine("\n\t" + board[0] + " | " + board[1] + " | " + board[2]);
 			System.Console.WriteLine("\t---------");
 			System.Console.WriteLine("\t"   + board[3] + " | " + board[4] + " | " + board[5]);
@@ -92,21 +92,21 @@ namespace Tictactoe {
 		public static bool IsOccupied(int move, char[] board) {
 			return board[move] != EMPTY;
 		}
-		
+
 		public static int GetNumber1to9() {
 			System.Console.WriteLine("Enter a number (1 - 9): ");
 			ConsoleKeyInfo a = System.Console.ReadKey();
-			
+
 			while (a.Key < ConsoleKey.D1 || a.Key > ConsoleKey.D9) {
 				System.Console.WriteLine("\nPlease repeat the input. Enter a number from 1 to 9");
 				a = System.Console.ReadKey();
 			}
-			
+
 			int num = a.Key - ConsoleKey.D1;
-			
+
 			return num;
 		}
-		
+
 		public static int GetHumanMove(char[] board) {
 			int move = GetNumber1to9();
 
@@ -139,7 +139,7 @@ namespace Tictactoe {
 
 				for (int i = 0; i < 9; i++) {
 					if (IsOccupied(i, boardCopy)) { continue; }
-					
+
 					possibleMoves.Add(i);
 				}
 
@@ -190,7 +190,7 @@ namespace Tictactoe {
 			for (int i = 0; i < possibleMoves.Count; i++) {
 				movesResults[i] = GetResultOfMove(possibleMoves[i], computer, board);
 			}
-			
+
 			int iBestMove = 0;
 
 			for (int i = 1; i < possibleMoves.Count; i++) {
