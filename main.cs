@@ -4,12 +4,12 @@ using System.Collections.Generic;
 namespace Tictactoe {
 	class Game {
 		private const int NUM_SQUARES = 9;
-        	private const char EMPTY = ' ';
-        	private const char DRAW = 'D';
-        	private const char NO_ONE = ' ';
+        private const char EMPTY = ' ';
+        private const char DRAW = 'D';
+        private const char NO_ONE = ' ';
         
-        	public static void PrintInstructions() {
-            		System.Console.WriteLine("Welcome to the game. To declare your move, you" +
+        public static void PrintInstructions() {
+            System.Console.WriteLine("Welcome to the game. To declare your move, you" +
 									 " should enter a number [1 - 9], like so: ");
 			System.Console.WriteLine("\t1 | 2 | 3");
 			System.Console.WriteLine("\t---------");
