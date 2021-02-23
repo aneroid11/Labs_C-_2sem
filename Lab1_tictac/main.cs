@@ -68,7 +68,7 @@ namespace Tictactoe {
 			//checking rows
 			for (int y = 0; y < 3; y++) {
 				if ( board[y * 3] == board[y * 3 + 1] && board[y * 3 + 1] == board[y * 3 + 2] && board[y * 3] != ' ') {
-					return board[ y * 3 ];
+					return board[y * 3];
 				}
 			}
 
@@ -180,7 +180,7 @@ namespace Tictactoe {
 			List<int> possibleMoves = new List<int>();
 
 			for (int i = 0; i < 9; i++) {
-				if (IsOccupied(i, board) ) { continue; }
+				if (IsOccupied(i, board)) { continue; }
 
 				possibleMoves.Add(i);
 			}
@@ -219,7 +219,7 @@ namespace Tictactoe {
 		}
 
 		public static void PrintWinner(char winner, char human, char computer) {
-			if ( winner == human ) {
+			if (winner == human) {
 				System.Console.WriteLine("You won");
 			} else if ( winner == computer ) {
 				System.Console.WriteLine("You lost");
