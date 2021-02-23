@@ -20,11 +20,11 @@ namespace Tictactoe {
 		}
 
 		public static char GetMoveOrder() {
-			System.Console.WriteLine("Do you want to move first? (press y/n)");
+			System.Console.WriteLine("Do you want to move first? (enter y/n)");
 			ConsoleKeyInfo yn = System.Console.ReadKey();
 			
 			while (yn.Key != ConsoleKey.Y && yn.Key != ConsoleKey.N) {
-				System.Console.WriteLine("\nYou pressed neither y nor n. Please press the key again");
+				System.Console.WriteLine("\nYou entered neither y nor n. Please enter the key again");
 				yn = System.Console.ReadKey();
 			}
 			
@@ -94,11 +94,11 @@ namespace Tictactoe {
 		}
 		
 		public static int GetNumber1to9() {
-			System.Console.WriteLine("Enter a number (press 1 - 9): ");
+			System.Console.WriteLine("Enter a number (1 - 9): ");
 			ConsoleKeyInfo a = System.Console.ReadKey();
 			
 			while (a.Key < ConsoleKey.D1 || a.Key > ConsoleKey.D9) {
-				System.Console.WriteLine("\nPlease repeat the input. Press a key from 1 to 9");
+				System.Console.WriteLine("\nPlease repeat the input. Enter a number from 1 to 9");
 				a = System.Console.ReadKey();
 			}
 			
@@ -139,7 +139,7 @@ namespace Tictactoe {
 
 				for (int i = 0; i < 9; i++) {
 					if (IsOccupied(i, boardCopy)) { continue; }
-
+					
 					possibleMoves.Add(i);
 				}
 
@@ -190,7 +190,7 @@ namespace Tictactoe {
 			for (int i = 0; i < possibleMoves.Count; i++) {
 				movesResults[i] = GetResultOfMove(possibleMoves[i], computer, board);
 			}
-
+			
 			int iBestMove = 0;
 
 			for (int i = 1; i < possibleMoves.Count; i++) {
@@ -215,7 +215,6 @@ namespace Tictactoe {
 				move = possibleMoves[iBestMove];
 			}
 
-			System.Console.WriteLine("I will move to number " + (move + 1));
 			return move;
 		}
 
