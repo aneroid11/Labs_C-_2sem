@@ -8,12 +8,14 @@ namespace Task2
 {
   class Program
   {
-    private static void DisplaySupportedLanguages() {
+    private static void DisplaySupportedLanguages() 
+    {
       Console.WriteLine("Supported languages:\n");
       
       CultureInfo[] cultures = CultureInfo.GetCultures(CultureTypes.AllCultures);
       
-      foreach (CultureInfo culture in cultures) {
+      foreach (CultureInfo culture in cultures) 
+      {
         Console.Write(culture.Name + " - ");
         Console.WriteLine(culture.EnglishName);
       }

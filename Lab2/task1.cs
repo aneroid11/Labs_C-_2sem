@@ -29,7 +29,8 @@ namespace Task1
           currentWord.Append(ch);
         }
         
-        if (prevInsideWord && !insideWord) {
+        if (prevInsideWord && !insideWord) 
+        {
           words.Add(currentWord);
           currentWord = new StringBuilder("");
         }
@@ -40,19 +41,60 @@ namespace Task1
       return words;
     }
     
+    private static void EraseWord(ref StringBuilder str, int start) 
+    {
+      for (int i = start; i < str.Length; i++) 
+      {
+        if (!Char.IsWhiteSpace(str[i])) 
+        {
+          str.Remove(i, 1);
+          i--;
+        } 
+        else 
+        {
+          break;
+        }
+      }
+    }
+    
+    private static void ReplaceWords(ref StringBuilder str, List<StringBuilder> words) 
+    {
+      int wordCounter = 0;
+      bool insideWord = false, prevInsideWord = false;
+      
+      for (int i = 0; i < str.Length; i++) 
+      {
+        if (Char.IsWhiteSpace(str[i])) 
+        {
+          insideWord = false;
+        } 
+        else 
+        {
+          insideWord = true;
+        }
+        
+        if (insideWord && !prevInsideWord) 
+        {
+          EraseWord(ref str, i);
+          str.Insert(i, words[wordCounter]);
+          wordCounter++;
+        }
+        
+        prevInsideWord = insideWord;
+      }
+    }
+    
     public static int Main(string[] args)
     {
       Console.Write("Enter a string: ");
       StringBuilder str = new StringBuilder(Console.ReadLine());
       List<StringBuilder> words = StringToWords(str);
       
-      StringBuilder reversed = new StringBuilder("");
+      words.Reverse();
       
-      for (int i = words.Count - 1; i >= 0; i--) {
-        reversed.Append(words[i] + " ");
-      }
+      StringBuilder reversed = str;
+      ReplaceWords(ref reversed, words);
       
-      Console.WriteLine("Words in reversed order: ");
       Console.WriteLine(reversed);
       return 0;
     }
