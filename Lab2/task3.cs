@@ -23,11 +23,13 @@ namespace Task3
       return mult;
     }
     
-    private static UInt64 CalculatePowerOfTwo(UInt64 a) {
+    private static UInt64 CalculatePowerOfTwo(UInt64 a) 
+    {
       UInt64 pow = 1;
       UInt64 powMax = pow;
       
-      while (pow <= a) {
+      while (pow <= a) 
+      {
         if (a % pow == 0)
         {
           powMax = pow;
