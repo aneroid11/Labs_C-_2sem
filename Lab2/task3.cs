@@ -7,35 +7,40 @@ namespace Task3
 {
   class Program
   {
-    private static UInt64 CalculatePowerOfTwo(UInt64 number) 
+    private static UInt64 MultFromAToB(UInt64 a, UInt64 b)
     {
-      UInt64 pow = 1, exponent = 0;
+      UInt64 mult = 1;
       
-      while (pow <= number) 
+      for (UInt64 i = a; i <= b;) 
       {
-        pow *= 2;
-        exponent++;
-        
-        if (number % pow != 0) 
+        checked
         {
-          exponent--;
-          break;
+          mult *= i;
+          i++;
         }
       }
       
-      return exponent;
+      return mult;
     }
     
-    private static UInt64 CalculatePowerOfTwoFromAToB(UInt64 a, UInt64 b) {
-      UInt64 exponent = 0;
+    private static UInt64 CalculatePowerOfTwo(UInt64 a) {
+      UInt64 pow = 1;
+      UInt64 powMax = pow;
       
-      for (UInt64 num = a; num <= b; num++) 
-      {
-        UInt64 currentExp = CalculatePowerOfTwo(num);
-        exponent += currentExp;
+      while (pow <= a) {
+        if (a % pow == 0)
+        {
+          powMax = pow;
+        }
+        else
+        {
+          break;
+        }
+        
+        pow *= 2;
       }
       
-      return exponent;
+      return powMax;
     }
     
     public static int Main(string[] args)
@@ -52,15 +57,24 @@ namespace Task3
       
       do
       {
-        Console.Write("Enter b (> a): ");
+        Console.Write("Enter b (>= a): ");
         string strB = Console.ReadLine();
-        error = !UInt64.TryParse(strB, out b) || (b <= a);
+        error = !UInt64.TryParse(strB, out b) || (b < a);
       } while (error);
       
       Console.WriteLine("a = " + a + ", b = " + b);
       
-      UInt64 exponent = CalculatePowerOfTwoFromAToB(a, b);
-      Console.WriteLine("The maximum power of two that divides the product: 2^" + exponent);
+      try
+      {
+        UInt64 product = MultFromAToB(a, b);
+        Console.WriteLine("The product of the numbers from a to b: " + product);
+        UInt64 pow = CalculatePowerOfTwo(product);
+        Console.WriteLine("The maximum power of two that divides the product: " + pow);
+      }
+      catch (OverflowException)
+      {
+        Console.WriteLine("Cannot calculate the product of the numbers from a to b: overflow");
+      }
       
       return 0;
     }
