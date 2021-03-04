@@ -29,7 +29,7 @@ namespace Task3
     private static UInt64 CalculatePowerOfTwoFromAToB(UInt64 a, UInt64 b) {
       UInt64 exponent = 0;
       
-      for (UInt64 num = a; num < b; num++) 
+      for (UInt64 num = a; num <= b; num++) 
       {
         UInt64 currentExp = CalculatePowerOfTwo(num);
         exponent += currentExp;
