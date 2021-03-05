@@ -17,7 +17,7 @@ namespace Task3
         {
           checked
           {
-            pow *= 2;
+            pow = pow << 1;
           }
         }
         catch
@@ -37,7 +37,8 @@ namespace Task3
       return exponent;
     }
     
-    private static UInt64 CalculateDividingPowerOfTwoFromAToB(UInt64 a, UInt64 b) {
+    private static UInt64 CalculateDividingPowerOfTwoFromAToB(UInt64 a, UInt64 b) 
+    {
       UInt64 exponent = 0;
       
       for (UInt64 num = a; num <= b;) 
@@ -71,9 +72,9 @@ namespace Task3
       
       do
       {
-        Console.Write("Enter a: ");
+        Console.Write("Enter a (> 0): ");
         string strA = Console.ReadLine();
-        error = !UInt64.TryParse(strA, out a);
+        error = !UInt64.TryParse(strA, out a) || (a <= 0);
       } while (error);
       
       do
