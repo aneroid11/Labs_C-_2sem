@@ -7,59 +7,15 @@ namespace Task3
 {
   class Program
   {
-    private static UInt64 CalculateDividingPowerOfTwo(UInt64 number) 
-    {
-      UInt64 pow = 1, exponent = 0;
-      
-      while (pow <= number) 
-      {
-        try
-        {
-          checked
-          {
-            pow = pow << 1;
-          }
-        }
-        catch
-        {
-          break;
-        }
-        
-        exponent++;
-        
-        if (number % pow != 0) 
-        {
-          exponent--;
-          break;
-        }
-      }
-      
-      return exponent;
-    }
-    
-    private static UInt64 CalculateDividingPowerOfTwoFromAToB(UInt64 a, UInt64 b) 
+    private static UInt64 CalculateDividingPowerOfFact(UInt64 b)
     {
       UInt64 exponent = 0;
       
-      for (UInt64 num = a; num <= b;) 
+      //Результатом будет [b/2] + [b/4] + [b/8] + ... 
+      while (b > 0)
       {
-        UInt64 currentExp = 0;
-        
-        currentExp = CalculateDividingPowerOfTwo(num);
-       
-        exponent += currentExp;
-        
-        try
-        {
-          checked
-          {
-            num++;
-          }
-        }
-        catch
-        {
-          break;
-        }
+        b /= 2;
+        exponent += b;
       }
       
       return exponent;
@@ -86,8 +42,11 @@ namespace Task3
       
       Console.WriteLine("a = " + a + ", b = " + b);
       
-      UInt64 exponent = CalculateDividingPowerOfTwoFromAToB(a, b);
-      Console.WriteLine("The maximum power of two that divides the product: 2^" + exponent);
+      UInt64 exponentA = CalculateDividingPowerOfFact(a - 1);
+      UInt64 exponentB = CalculateDividingPowerOfFact(b);
+      
+      // Так как b! / (a - 1)! = искомому произведению, то искомая степень равна exponentB - exponentA
+      Console.WriteLine("The maximum power of two that divides the product from a to b: 2^" + (exponentB - exponentA));
       
       return 0;
     }
