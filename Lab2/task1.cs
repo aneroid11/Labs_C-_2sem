@@ -32,7 +32,7 @@ namespace Task1
         if (prevInsideWord && !insideWord) 
         {
           words.Add(currentWord);
-          currentWord = new StringBuilder("");
+          currentWord = new StringBuilder();
         }
         
         prevInsideWord = insideWord;
