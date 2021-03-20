@@ -11,6 +11,7 @@ namespace Lab3
         public static double KmInLightYear() { return 9.461E12; }
         public static double KmInAstronomicalUnit() { return 1.496E8; }
         public static double SunRadiusKm() { return 6.96E5; }
+        public static double GravitationalConstant() { return 6.674E-11; }
     }
 
     // Базовый класс небесного тела
@@ -82,6 +83,15 @@ namespace Lab3
             MassesFormat = co.MassesFormat;
             DistancesFormat = co.DistancesFormat;
             RadiusesFormat = co.RadiusesFormat;
+        }
+
+        public double EscapeVelocity()
+        {
+            double massKg = MassesFormat == MassFormat.Kilograms ? Mass : Mass * Astronomy.SunMassKg();
+            double radiusM = RadiusesFormat == RadiusFormat.Kilometers ? Radius : Radius * Astronomy.SunRadiusKm();
+            radiusM *= 1000.0;
+
+            return Math.Sqrt(2 * Astronomy.GravitationalConstant() * massKg / radiusM);
         }
 
         virtual public void Convert(MassFormat mf)
@@ -195,6 +205,8 @@ namespace Lab3
             {
                 s += "Mass: " + Mass.ToString("E") + " solar masses\n";
             }
+
+            s += "Escape velocity: " + EscapeVelocity() + " m/s\n";
 
             s += "Main elements: ";
             foreach (string el in _mainElements)

@@ -1,17 +1,4 @@
-﻿/*
- * Предусмотреть необходимый набор:
- * методов, 
- * полей, 
- * свойств, 
- * конструкторов 
- * и индексаторов в реализуемом классе. 
- * Реализовать:
- * статические элементы класса (например, создание уникального Id), 
- * перегрузку методов. 
- * Продемонстрировать работу с созданным классом.
- * */
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 
 namespace Lab3
@@ -60,6 +47,8 @@ namespace Lab3
             foreach (CelestialObject curr in celestials)
             {
                 curr.Convert(CelestialObject.DistanceFormat.AstronomicalUnit);
+                curr.Convert(CelestialObject.RadiusFormat.Kilometers);
+                curr.Convert(CelestialObject.MassFormat.Kilograms);
                 Console.WriteLine(curr);
             }
             Console.WriteLine("----------------------------------------");

@@ -1,3 +1,4 @@
 ﻿Sun, star, 150000000, 1, 1, SM, km, SR, helium, hydrogen
 Rigel, star, 860, 78.9, 21, SM, ly, SR, helium, hydrogen
 Moon, moon, 400000, 1737.4, 7.342E22, kg, km, km, oxygen, silicon, iron, magnesium, calcium, aluminium
+Earth, planet, 0, 6371, 5.972E24, kg, km, km, oxygen, iron, calcium, ddsogsdko
