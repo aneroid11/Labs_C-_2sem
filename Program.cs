@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Предусмотреть необходимый набор:
  * методов, 
  * полей, 
@@ -12,6 +12,7 @@
  * */
 
 using System;
+using System.Collections.Generic;
 
 namespace Lab3
 { 
@@ -41,7 +42,30 @@ namespace Lab3
         public DistanceFormat DistancesFormat { get; protected set; }
         public RadiusFormat RadiusesFormat { get; protected set; }
 
-        public CelestialObject(string name = "", string type = "",
+        protected List<string> _mainElements;
+        public int NumElements() { return _mainElements.Count; }
+
+        public string this[int index]
+        {
+            get
+            {
+                return _mainElements[index];
+            }
+        }
+
+        public CelestialObject()
+        {
+            Name = Type = "";
+            DistanceFromEarth = Radius = Mass = 0.0;
+            MassesFormat = MassFormat.KILOGRAMS;
+            DistancesFormat = DistanceFormat.KILOMETERS;
+            RadiusesFormat = RadiusFormat.KILOMETERS;
+            _mainElements = new List<string>();
+        }
+
+        public CelestialObject(List<string> mainElements, 
+                               string name = "", 
+                               string type = "",
                                double distFromEarth = 0.0,
                                double radius = 0.0,
                                double mass = 0.0, 
@@ -54,6 +78,7 @@ namespace Lab3
             DistanceFromEarth = distFromEarth;
             Radius = radius;
             Mass = mass;
+            _mainElements = mainElements;
             MassesFormat = massesFormat;
             DistancesFormat = distancesFormat;
             RadiusesFormat = radiusesFormat;
@@ -66,6 +91,7 @@ namespace Lab3
             DistanceFromEarth = co.DistanceFromEarth;
             Radius = co.Radius;
             Mass = co.Mass;
+            _mainElements = co._mainElements;
             MassesFormat = co.MassesFormat;
             DistancesFormat = co.DistancesFormat;
             RadiusesFormat = co.RadiusesFormat;
@@ -183,7 +209,123 @@ namespace Lab3
                 s += "Mass: " + Mass.ToString("E") + " solar masses\n"; 
             }
 
+            s += "Main elements: ";
+            foreach (string el in _mainElements)
+            {
+                s += el;
+                s += " ";
+            }
+            s += "\n";
+
             return s;
+        }
+
+        public static bool TryParse(string str, out CelestialObject co)
+        {
+            if (string.IsNullOrEmpty(str))
+            {
+                co = new CelestialObject();
+                return false;
+            }
+
+            char[] separators = { ' ', ',', '\t' };
+            string[] parts = str.Split(separators, StringSplitOptions.RemoveEmptyEntries);
+
+            if (parts.Length < 9)
+            {
+                co = new CelestialObject();
+                return false;
+            }
+
+            string name = parts[0];
+            string type = parts[1];
+            string distStr = parts[2];
+            string radiusStr = parts[3];
+            string massStr = parts[4];
+            string massesFormatStr = parts[5];
+            string distFormatStr = parts[6];
+            string radiusFormatStr = parts[7];
+
+            List<string> mainElements = new List<string>();
+            for (int i = 8; i < parts.Length; i++)
+            {
+                mainElements.Add(parts[i]);
+            }
+
+            double dist;
+            bool result = double.TryParse(distStr, out dist);
+            if (!result || dist < 0.0)
+            { 
+                co = new CelestialObject();
+                return false;
+            }
+
+            double radius;
+            result = double.TryParse(radiusStr, out radius);
+            if (!result || radius < 0.0)
+            {
+                co = new CelestialObject();
+                return false;
+            }
+
+            double mass;
+            result = double.TryParse(massStr, out mass);
+            if (!result || mass < 0.0)
+            {
+                co = new CelestialObject();
+                return false;
+            }
+
+            MassFormat massFormat;
+            switch (massesFormatStr)
+            {
+                case "kg":
+                    massFormat = MassFormat.KILOGRAMS;
+                    break;
+                case "SM":
+                    massFormat = MassFormat.SUN_MASS;
+                    break;
+                default:
+                    co = new CelestialObject();
+                    return false;
+            }
+
+            DistanceFormat distanceFormat;
+            switch (distFormatStr)
+            {
+                case "km":
+                    distanceFormat = DistanceFormat.KILOMETERS;
+                    break;
+                case "pc":
+                    distanceFormat = DistanceFormat.PARSEK;
+                    break;
+                case "ly":
+                    distanceFormat = DistanceFormat.LIGHT_YEAR;
+                    break;
+                case "au":
+                    distanceFormat = DistanceFormat.ASTRONOMICAL_UNIT;
+                    break;
+                default:
+                    co = new CelestialObject();
+                    return false;
+            }
+
+            RadiusFormat radiusFormat;
+            switch (radiusFormatStr)
+            {
+                case "km":
+                    radiusFormat = RadiusFormat.KILOMETERS;
+                    break;
+                case "SR":
+                    radiusFormat = RadiusFormat.SUN_RADIUS;
+                    break;
+                default:
+                    co = new CelestialObject();
+                    return false;
+            }
+
+            co = new CelestialObject(mainElements, name, type, dist, radius, mass, massFormat, distanceFormat, radiusFormat);
+            return true;
         }
     }
 
@@ -191,45 +333,32 @@ namespace Lab3
     {
         public static int Main(string[] args)
         {
-            CelestialObject example = new CelestialObject("Sun", "Star", 
-                                                          150000000.0, 
-                                                          Astronomy.SunRadiusKm(), 
-                                                          Astronomy.SunMassKg(), 
-                                                          CelestialObject.MassFormat.KILOGRAMS, 
-                                                          CelestialObject.DistanceFormat.KILOMETERS,
-                                                          CelestialObject.RadiusFormat.KILOMETERS);
+            string[] lines = System.IO.File.ReadAllLines("celestials.txt");
+            List<CelestialObject> celestials = new List<CelestialObject>();
 
-            Console.WriteLine("Sun with the weight in kg: ");
-            Console.WriteLine(example.ToString());
-            example.Convert(CelestialObject.MassFormat.SUN_MASS);
+            foreach (string l in lines)
+            {
+                CelestialObject current;
+                if (!CelestialObject.TryParse(l, out current))
+                {
+                    Console.WriteLine("Wrong input");
+                    return 1;
+                }
 
-            Console.WriteLine("Sun with the weight in sun masses: ");
-            Console.WriteLine(example.ToString());
+                celestials.Add(current);
+            }
 
-            Console.WriteLine("Sun with the radius in sun radiuses: ");
-            example.Convert(CelestialObject.RadiusFormat.SUN_RADIUS);
-            Console.WriteLine(example.ToString());
-
-            Console.WriteLine("Distance from Earth in parseks: ");
-            example.Convert(CelestialObject.DistanceFormat.PARSEK);
-            Console.WriteLine(example.ToString());
-
-            Console.WriteLine("Distance from Earth in light years: ");
-            example.Convert(CelestialObject.DistanceFormat.LIGHT_YEAR);
-            Console.WriteLine(example.ToString());
-
-            Console.WriteLine("Distance from Earth in astronomical units: ");
-            example.Convert(CelestialObject.DistanceFormat.ASTRONOMICAL_UNIT);
-            Console.WriteLine(example.ToString());
-
-            Console.WriteLine("Creating celestial object by default: ");
-            CelestialObject o = new CelestialObject();
-            Console.WriteLine(o.ToString());
-
-            CelestialObject newSun = new CelestialObject();
-            newSun = example;
-            Console.WriteLine("Now there are two suns: ");
-            Console.WriteLine(newSun.ToString());
+            if (celestials.Count > 0)
+            {
+                foreach (CelestialObject curr in celestials)
+                {
+                    Console.WriteLine("\nName: " + curr.Name);
+                    for (int i = 0; i < curr.NumElements(); i++)
+                    {
+                        Console.WriteLine(curr[i]);
+                    }
+                }
+            }
 
             return 0;
         }
