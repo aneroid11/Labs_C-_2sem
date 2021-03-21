@@ -12,6 +12,7 @@ namespace Lab3
         public static double KmInAstronomicalUnit() { return 1.496E8; }
         public static double SunRadiusKm() { return 6.96E5; }
         public static double GravitationalConstant() { return 6.674E-11; }
+        public static double EarthGravity() { return 9.80665; }
     }
 
     // Базовый класс небесного тела
@@ -92,6 +93,25 @@ namespace Lab3
             radiusM *= 1000.0;
 
             return Math.Sqrt(2 * Astronomy.GravitationalConstant() * massKg / radiusM);
+        }
+
+        public double MeanDensity()
+        {
+            double massKg = MassesFormat == MassFormat.Kilograms ? Mass : Mass * Astronomy.SunMassKg();
+            double radiusM = RadiusesFormat == RadiusFormat.Kilometers ? Radius : Radius * Astronomy.SunRadiusKm();
+            radiusM *= 1000.0;
+            double volumeM3 = (4.0 / 3.0) * Math.PI * (radiusM * radiusM * radiusM);
+
+            return massKg / volumeM3;
+        }
+
+        public double SurfaceGravity()
+        {
+            double massKg = MassesFormat == MassFormat.Kilograms ? Mass : Mass * Astronomy.SunMassKg();
+            double radiusM = RadiusesFormat == RadiusFormat.Kilometers ? Radius : Radius * Astronomy.SunRadiusKm();
+            radiusM *= 1000.0;
+
+            return (Astronomy.GravitationalConstant() * massKg) / (radiusM * radiusM);
         }
 
         virtual public void Convert(MassFormat mf)
@@ -206,7 +226,9 @@ namespace Lab3
                 s += "Mass: " + Mass.ToString("E") + " solar masses\n";
             }
 
-            s += "Escape velocity: " + EscapeVelocity() + " m/s\n";
+            s += "Mean density: " + MeanDensity().ToString("E") + " kg/m^3\n";
+            s += "Surface gravity: " + SurfaceGravity().ToString("E") + " m/s^2\n";
+            s += "Escape velocity: " + EscapeVelocity().ToString("E") + " m/s\n";
 
             s += "Main elements: ";
             foreach (string el in _mainElements)
