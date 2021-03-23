@@ -6,11 +6,11 @@ namespace Lab3
     // Общие константы
     static class Astronomy
     {
-        public static double SunMassKg() { return 1.989E30; }
+        public static double SolarMassKg() { return 1.989E30; }
         public static double KmInParsek() { return 3.086E13; }
         public static double KmInLightYear() { return 9.461E12; }
         public static double KmInAstronomicalUnit() { return 1.496E8; }
-        public static double SunRadiusKm() { return 6.96E5; }
+        public static double SolarRadiusKm() { return 6.96E5; }
         public static double GravitationalConstant() { return 6.674E-11; }
         public static double EarthGravity() { return 9.80665; }
     }
@@ -88,8 +88,8 @@ namespace Lab3
 
         public double EscapeVelocity()
         {
-            double massKg = MassesFormat == MassFormat.Kilograms ? Mass : Mass * Astronomy.SunMassKg();
-            double radiusM = RadiusesFormat == RadiusFormat.Kilometers ? Radius : Radius * Astronomy.SunRadiusKm();
+            double massKg = MassesFormat == MassFormat.Kilograms ? Mass : Mass * Astronomy.SolarMassKg();
+            double radiusM = RadiusesFormat == RadiusFormat.Kilometers ? Radius : Radius * Astronomy.SolarRadiusKm();
             radiusM *= 1000.0;
 
             return Math.Sqrt(2 * Astronomy.GravitationalConstant() * massKg / radiusM);
@@ -97,8 +97,8 @@ namespace Lab3
 
         public double MeanDensity()
         {
-            double massKg = MassesFormat == MassFormat.Kilograms ? Mass : Mass * Astronomy.SunMassKg();
-            double radiusM = RadiusesFormat == RadiusFormat.Kilometers ? Radius : Radius * Astronomy.SunRadiusKm();
+            double massKg = MassesFormat == MassFormat.Kilograms ? Mass : Mass * Astronomy.SolarMassKg();
+            double radiusM = RadiusesFormat == RadiusFormat.Kilometers ? Radius : Radius * Astronomy.SolarRadiusKm();
             radiusM *= 1000.0;
             double volumeM3 = (4.0 / 3.0) * Math.PI * (radiusM * radiusM * radiusM);
 
@@ -107,8 +107,8 @@ namespace Lab3
 
         public double SurfaceGravity()
         {
-            double massKg = MassesFormat == MassFormat.Kilograms ? Mass : Mass * Astronomy.SunMassKg();
-            double radiusM = RadiusesFormat == RadiusFormat.Kilometers ? Radius : Radius * Astronomy.SunRadiusKm();
+            double massKg = MassesFormat == MassFormat.Kilograms ? Mass : Mass * Astronomy.SolarMassKg();
+            double radiusM = RadiusesFormat == RadiusFormat.Kilometers ? Radius : Radius * Astronomy.SolarRadiusKm();
             radiusM *= 1000.0;
 
             return (Astronomy.GravitationalConstant() * massKg) / (radiusM * radiusM);
@@ -123,11 +123,11 @@ namespace Lab3
 
             if (old == MassFormat.Kilograms && mf == MassFormat.SolarMass)
             {
-                Mass /= Astronomy.SunMassKg();
+                Mass /= Astronomy.SolarMassKg();
             }
             else if (old == MassFormat.SolarMass && mf == MassFormat.Kilograms)
             {
-                Mass *= Astronomy.SunMassKg();
+                Mass *= Astronomy.SolarMassKg();
             }
         }
 
@@ -140,11 +140,11 @@ namespace Lab3
 
             if (old == RadiusFormat.Kilometers && rf == RadiusFormat.SolarRadius)
             {
-                Radius /= Astronomy.SunRadiusKm();
+                Radius /= Astronomy.SolarRadiusKm();
             }
             else if (old == RadiusFormat.SolarRadius && rf == RadiusFormat.Kilometers)
             {
-                Radius *= Astronomy.SunRadiusKm();
+                Radius *= Astronomy.SolarRadiusKm();
             }
         }
 
