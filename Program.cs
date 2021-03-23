@@ -5,9 +5,8 @@ namespace Lab3
 { 
     class Program
     {
-        public static int Main(string[] args)
+        public static List<CelestialObject> CreateListOfCelestialObjects()
         {
-            // Прочитать все данные об объектах из файла
             string[] lines = System.IO.File.ReadAllLines("celestials.txt");
             List<CelestialObject> celestials = new List<CelestialObject>();
 
@@ -17,25 +16,35 @@ namespace Lab3
                 if (!CelestialObject.TryParse(l, out current))
                 {
                     Console.WriteLine("Wrong input. Please check if the data in file is correct");
-                    return 1;
+                    return null;
                 }
 
                 celestials.Add(current);
             }
-            // Создать и добавить в список новый объект
+
+            Console.WriteLine("File was successfully read. Adding a new object in the list...");
             List<string> newObjElems = new List<string> { "polonium", "lithium", "helium" };
             CelestialObject newObj = new CelestialObject(newObjElems, "Pandora", "Planet", 20, 0.0004, 1E-8,
                                                          CelestialObject.MassFormat.SolarMass,
                                                          CelestialObject.DistanceFormat.LightYear,
                                                          CelestialObject.RadiusFormat.SolarRadius);
             celestials.Add(newObj);
-            // Вывести все объекты
+            return celestials;
+        }
+
+        public static void ShowListOfCelestials(List<CelestialObject> celestials)
+        {
             foreach (CelestialObject curr in celestials)
             {
                 Console.WriteLine("----------------------------------------");
                 Console.WriteLine(curr);
             }
-            // Вывести только элементы объектов
+
+            Console.WriteLine("----------------------------------------");
+        }
+
+        public static void ShowMainElementsOfCelestials(List<CelestialObject> celestials)
+        {
             foreach (CelestialObject curr in celestials)
             {
                 Console.WriteLine("----------------------------------------");
@@ -46,8 +55,12 @@ namespace Lab3
                 }
                 Console.WriteLine("\n");
             }
-            // Вывести объекты с расстоянием в астрономических единицах, радиусом в 
-            // километрах и массой в килограммах
+
+            Console.WriteLine("----------------------------------------");
+        }
+
+        public static void ConvertUnits(List<CelestialObject> celestials)
+        {
             foreach (CelestialObject curr in celestials)
             {
                 Console.WriteLine("----------------------------------------");
@@ -56,6 +69,27 @@ namespace Lab3
                 curr.Convert(CelestialObject.MassFormat.Kilograms);
                 Console.WriteLine(curr);
             }
+            Console.WriteLine("----------------------------------------");
+        }
+
+        public static int Main(string[] args)
+        {
+            Console.WriteLine("Creating the list of celestial objects...");
+            List<CelestialObject> celestials = CreateListOfCelestialObjects();
+            if (celestials == null)
+            {
+                Console.WriteLine("Error reading celestials.txt");
+                return 1;
+            }
+
+            Console.WriteLine("Showing all objects:");
+            ShowListOfCelestials(celestials);
+
+            Console.WriteLine("Showing only main elements of objects: ");
+            ShowMainElementsOfCelestials(celestials);
+
+            Console.WriteLine("Converting all distances to astronomical units, radiuses to kilometers, masses to kilograms:");
+            ConvertUnits(celestials);
 
             return 0;
         }
