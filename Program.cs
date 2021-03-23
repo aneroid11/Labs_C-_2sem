@@ -32,11 +32,6 @@ namespace Lab3
             return celestials;
         }
 
-        public static void Edid(List<CelestialObject> celestials)
-        {
-            celestials[2] = new CelestialObject();
-        }
-
         public static void ShowListOfCelestials(List<CelestialObject> celestials)
         {
             foreach (CelestialObject curr in celestials)
