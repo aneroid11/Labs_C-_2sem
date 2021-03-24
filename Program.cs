@@ -5,30 +5,57 @@ namespace Lab3
 { 
     class Program
     {
-        public static List<CelestialObject> CreateListOfCelestialObjects()
+        public static CelestialObject GetObjectFromConsole()
         {
-            string[] lines = System.IO.File.ReadAllLines("celestials.txt");
-            List<CelestialObject> celestials = new List<CelestialObject>();
+            //﻿Sun, star, 150000000, 1, 1, SM, km, SR, helium, hydrogen
+            Console.WriteLine("\nEnter the object in the format:");
+            Console.WriteLine("[name], [type], [distance from Earth], [radius], [mass], [mass format - kg/SM], [distance format - km/au/pc/ly], [radius format - SR/km], [main elements]");
+            Console.WriteLine("For example:");
+            Console.WriteLine("Sun, star, 150000000, 1, 1, SM, km, SR, helium, hydrogen");
+            string objStr = Console.ReadLine();
+            CelestialObject celestial;
 
-            foreach (string l in lines)
+            while (!CelestialObject.TryParse(objStr, out celestial))
             {
-                CelestialObject current;
-                if (!CelestialObject.TryParse(l, out current))
-                {
-                    Console.WriteLine("Wrong input. Please check if the data in file is correct");
-                    return null;
-                }
-
-                celestials.Add(current);
+                Console.WriteLine("Please enter the object correctly");
+                objStr = Console.ReadLine();
             }
 
-            Console.WriteLine("File was successfully read. Adding a new object in the list...");
-            List<string> newObjElems = new List<string> { "polonium", "lithium", "helium" };
-            CelestialObject newObj = new CelestialObject(newObjElems, "Pandora", "Planet", 20, 0.0004, 1E-8,
-                                                         CelestialObject.MassFormat.SolarMass,
-                                                         CelestialObject.DistanceFormat.LightYear,
-                                                         CelestialObject.RadiusFormat.SolarRadius);
-            celestials.Add(newObj);
+            return celestial;
+        }
+
+        public static List<CelestialObject> CreateListOfCelestialObjects()
+        {
+            List<CelestialObject> celestials = new List<CelestialObject>();
+
+            bool exit = false;
+            while (!exit)
+            {
+                Console.WriteLine("Press a to add a celestial object, press q to stop adding objects");
+                ConsoleKeyInfo keyInfo = Console.ReadKey();
+
+                while (keyInfo.Key != ConsoleKey.A && keyInfo.Key != ConsoleKey.Q)
+                {
+                    Console.WriteLine("\nInput error. Please press a or q");
+                    keyInfo = Console.ReadKey();
+                }
+
+                if (keyInfo.Key == ConsoleKey.A)
+                {
+                    CelestialObject newObj = GetObjectFromConsole();
+                    celestials.Add(newObj);
+                }
+                else if (keyInfo.Key == ConsoleKey.Q && celestials.Count == 0)
+                {
+                    Console.WriteLine("\nYou didn't enter any objects. Enter something");
+                }
+                else if (keyInfo.Key == ConsoleKey.Q)
+                {
+                    exit = true;
+                }
+            }
+
+            Console.WriteLine();
             return celestials;
         }
 
@@ -74,14 +101,8 @@ namespace Lab3
 
         public static int Main(string[] args)
         {
-            Console.WriteLine("Creating the list of celestial objects...");
             List<CelestialObject> celestials = CreateListOfCelestialObjects();
-            if (celestials == null)
-            {
-                Console.WriteLine("Error reading celestials.txt");
-                return 1;
-            }
-
+         
             Console.WriteLine("Showing all objects:");
             ShowListOfCelestials(celestials);
 

@@ -87,10 +87,15 @@ namespace Lab3
         }
 
         public double EscapeVelocity()
-        {
+        { 
             double massKg = MassesFormat == MassFormat.Kilograms ? Mass : Mass * Astronomy.SolarMassKg();
             double radiusM = RadiusesFormat == RadiusFormat.Kilometers ? Radius : Radius * Astronomy.SolarRadiusKm();
             radiusM *= 1000.0;
+
+            if (radiusM < Double.Epsilon)
+            {
+                return Double.MaxValue;
+            }
 
             return Math.Sqrt(2 * Astronomy.GravitationalConstant() * massKg / radiusM);
         }
@@ -101,6 +106,10 @@ namespace Lab3
             double radiusM = RadiusesFormat == RadiusFormat.Kilometers ? Radius : Radius * Astronomy.SolarRadiusKm();
             radiusM *= 1000.0;
             double volumeM3 = (4.0 / 3.0) * Math.PI * (radiusM * radiusM * radiusM);
+            if (volumeM3 < Double.Epsilon)
+            {
+                return double.MaxValue;
+            }
 
             return massKg / volumeM3;
         }
@@ -110,6 +119,10 @@ namespace Lab3
             double massKg = MassesFormat == MassFormat.Kilograms ? Mass : Mass * Astronomy.SolarMassKg();
             double radiusM = RadiusesFormat == RadiusFormat.Kilometers ? Radius : Radius * Astronomy.SolarRadiusKm();
             radiusM *= 1000.0;
+            if (radiusM * radiusM < Double.Epsilon)
+            {
+                return Double.MaxValue;
+            }
 
             return (Astronomy.GravitationalConstant() * massKg) / (radiusM * radiusM);
         }
