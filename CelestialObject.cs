@@ -31,6 +31,8 @@ namespace Lab3
         public MassFormat MassesFormat { get; protected set; }
         public DistanceFormat DistancesFormat { get; protected set; }
         public RadiusFormat RadiusesFormat { get; protected set; }
+        public int Id { get; protected set; }
+        protected static int _numObjects = 0;
 
         protected List<string> _mainElements;
         public int NumElements() { return _mainElements.Count; }
@@ -45,6 +47,8 @@ namespace Lab3
 
         public CelestialObject()
         {
+            _numObjects++;
+            Id = _numObjects;
             Name = Type = "";
             DistanceFromEarth = Radius = Mass = 0.0;
             MassesFormat = MassFormat.Kilograms;
@@ -63,6 +67,8 @@ namespace Lab3
                                DistanceFormat distancesFormat = DistanceFormat.Kilometers,
                                RadiusFormat radiusesFormat = RadiusFormat.Kilometers)
         {
+            _numObjects++;
+            Id = _numObjects;
             Name = name;
             Type = type;
             DistanceFromEarth = distFromEarth;
@@ -76,6 +82,8 @@ namespace Lab3
 
         public CelestialObject(CelestialObject co)
         {
+            _numObjects++;
+            Id = _numObjects;
             Name = co.Name;
             Type = co.Type;
             DistanceFromEarth = co.DistanceFromEarth;
@@ -207,6 +215,7 @@ namespace Lab3
         public override string ToString()
         {
             string s = "";
+            s += "Id: " + Id + "\n";
             s += "Celestial object: ";
             s += Name + "\n";
             s += "Type: " + Type + "\n";

@@ -115,7 +115,7 @@ namespace Lab3
         public static int Main(string[] args)
         {
             List<CelestialObject> celestials = CreateListOfCelestialObjects();
-         
+
             Console.WriteLine("Showing all objects:");
             ShowListOfCelestials(celestials);
             Console.WriteLine("Press any key");
