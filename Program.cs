@@ -7,11 +7,10 @@ namespace Lab3
     {
         public static CelestialObject GetObjectFromConsole()
         {
-            //﻿Sun, star, 150000000, 1, 1, SM, km, SR, helium, hydrogen
             Console.WriteLine("\nEnter the object in the format:");
-            Console.WriteLine("[name], [type], [distance from Earth], [radius], [mass], [mass format - kg/SM], [distance format - km/au/pc/ly], [radius format - SR/km], [main elements]");
+            Console.WriteLine("[name], [type], [distance from Earth], [radius], [mass], [distance format - km/au/pc/ly], [radius format - SR/km], [mass format - kg/SM], [main elements]");
             Console.WriteLine("For example:");
-            Console.WriteLine("Sun, star, 150000000, 1, 1, SM, km, SR, helium, hydrogen");
+            Console.WriteLine("Sun, star, 150000000, 1, 1, km, SR, SM, helium, hydrogen");
             string objStr = Console.ReadLine();
             CelestialObject celestial;
 

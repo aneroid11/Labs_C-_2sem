@@ -276,9 +276,9 @@ namespace Lab3
             string distStr = parts[2];
             string radiusStr = parts[3];
             string massStr = parts[4];
-            string massesFormatStr = parts[5];
-            string distFormatStr = parts[6];
-            string radiusFormatStr = parts[7];
+            string distFormatStr = parts[5];
+            string radiusFormatStr = parts[6];
+            string massesFormatStr = parts[7];
 
             List<string> mainElements = new List<string>();
             for (int i = 8; i < parts.Length; i++)
