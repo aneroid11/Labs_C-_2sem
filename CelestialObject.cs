@@ -13,6 +13,7 @@ namespace Lab3
         public static double SolarRadiusKm() { return 6.96E5; }
         public static double GravitationalConstant() { return 6.674E-11; }
         public static double EarthGravity() { return 9.80665; }
+        public static double LightSpeedMS() { return 299792458; }
     }
 
     // Базовый класс небесного тела
@@ -97,7 +98,13 @@ namespace Lab3
                 return Double.MaxValue;
             }
 
-            return Math.Sqrt(2 * Astronomy.GravitationalConstant() * massKg / radiusM);
+            double velocity = Math.Sqrt(2 * Astronomy.GravitationalConstant() * massKg / radiusM);
+            if (velocity > Astronomy.LightSpeedMS())
+            {
+                return Astronomy.LightSpeedMS();
+            }
+
+            return velocity;
         }
 
         public double MeanDensity()
