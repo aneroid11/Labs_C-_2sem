@@ -98,18 +98,41 @@ namespace Lab3
             Console.WriteLine("----------------------------------------");
         }
 
+        public static void ShowCelestialWithMaximalGravity(List<CelestialObject> celestials)
+        {
+            CelestialObject max = celestials[0];
+            foreach (CelestialObject curr in celestials)
+            {
+                if (max.SurfaceGravity() < curr.SurfaceGravity())
+                {
+                    max = curr;
+                }
+            }
+
+            Console.WriteLine(max);
+        }
+
         public static int Main(string[] args)
         {
             List<CelestialObject> celestials = CreateListOfCelestialObjects();
-         
+
             Console.WriteLine("Showing all objects:");
             ShowListOfCelestials(celestials);
+            Console.WriteLine("Press any key");
+            Console.ReadKey();
 
-            Console.WriteLine("Showing only main elements of objects: ");
+            Console.WriteLine("\nShowing only main elements of objects: ");
             ShowMainElementsOfCelestials(celestials);
+            Console.WriteLine("Press any key");
+            Console.ReadKey();
 
-            Console.WriteLine("Converting all distances to astronomical units, radiuses to kilometers, masses to kilograms:");
+            Console.WriteLine("\nConverting all distances to astronomical units, radiuses to kilometers, masses to kilograms:");
             ConvertUnits(celestials);
+            Console.WriteLine("Press any key");
+            Console.ReadKey();
+
+            Console.WriteLine("\nObject with maximal surface gravity:");
+            ShowCelestialWithMaximalGravity(celestials);
 
             return 0;
         }
