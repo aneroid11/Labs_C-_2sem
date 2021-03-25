@@ -73,6 +73,7 @@ namespace Lab4_task2
 
             PPM.WriteInFile(&image, "ppm_image.ppm");
             PPM.Destroy(&image);
+            Console.WriteLine("The image was changed successfully");
             return 0;
         }
     }
