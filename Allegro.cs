@@ -10,6 +10,8 @@ public static class Allegro
     public const int UNSTABLE_BIT = 0;
     public const int VERSION_INT = (VERSION << 24) | (SUB_VERSION << 16) | (WIP_VERSION << 8) | RELEASE_NUMBER | UNSTABLE_BIT;
 
+    public const int FULLSCREEN = 1 << 1;
+
     public struct Color
     {
         public float r, g, b, a;
@@ -203,6 +205,9 @@ public static class Allegro
 
     [DllImport("liballegro.so", EntryPoint = "al_create_display")]
     public extern static IntPtr CreateDisplay(int screenWidth, int screenHeight);
+
+    [DllImport("liballegro.so", EntryPoint = "al_set_new_display_flags")]
+    public extern static void SetNewDisplayFlags(int flags);
 
     [DllImport("liballegro.so", EntryPoint = "al_destroy_display")]
     public extern static void DestroyDisplay(IntPtr display);

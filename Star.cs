@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Text;
 using System.Collections.Generic;
 
 namespace Sky
@@ -35,6 +34,31 @@ namespace Sky
         {
             SpectralType = s.SpectralType;
             Temperature = s.Temperature;
+        }
+
+        public static Star GenerateRandom()
+        {
+            Random random = new Random();
+
+            List<string> mainElems = new List<string> { "helium", "hydrogen", "oxygen" };
+            string name = Astronomy.GenerateRandomObjectName().ToString();
+            char spectralType = ' ';
+            int a = random.Next(7);
+
+            switch (a)
+            {
+                case 0: spectralType = 'O'; break;
+                case 1: spectralType = 'G'; break;
+                case 2: spectralType = 'B'; break;
+                case 3: spectralType = 'F'; break;
+                case 4: spectralType = 'K'; break;
+                case 5: spectralType = 'M'; break;
+                case 6: spectralType = 'A'; break;
+            }
+
+            Star star = new Star(mainElems, name, random.Next(1, 10), random.Next(20, 60), random.Next(200, 10000), 
+                                 MassFormat.SolarMass, DistanceFormat.LightYear, RadiusFormat.SolarRadius, spectralType, random.Next(5000, 20000));
+            return star;
         }
 
         public override Allegro.Color GetColor()

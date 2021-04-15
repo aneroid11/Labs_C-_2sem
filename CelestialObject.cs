@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text;
 
 namespace Sky
 {
-    // Общие константы
+    // Общие константы и методы для астрономических объектов
     static class Astronomy
     {
         public static double SolarMassKg() { return 1.989E30; }
@@ -14,10 +15,34 @@ namespace Sky
         public static double GravitationalConstant() { return 6.674E-11; }
         public static double EarthGravity() { return 9.80665; }
         public static double LightSpeedMS() { return 299792458; }
+
+        public static StringBuilder GenerateRandomObjectName()
+        {
+            Random random = new Random();
+            StringBuilder name = new StringBuilder();
+            int len = random.Next(20) + 10;
+            for (int i = 0; i < len; i++)
+            {
+                name.Append((char)random.Next('A', 'Z'));
+            }
+
+            return name;
+        }
     }
 
     static class Transformation
     {
+        public static double DegToRad(double deg)
+        {
+            return deg / 180.0 * Math.PI;
+        }
+
+        public static double RadToDeg(double rad)
+        {
+            return rad / Math.PI * 180.0;
+        }
+
+        // phi - задаётся в радианах.
         public static void RotatePoint(ref double x, ref double y, double phi)
         {
             double newX = 0.0, newY = 0.0;
@@ -30,7 +55,7 @@ namespace Sky
     }
 
     // Базовый класс небесного тела
-    public class CelestialObject
+    public abstract class CelestialObject
     {
         public enum MassFormat { SolarMass, Kilograms }
         public enum RadiusFormat { SolarRadius, Kilometers }
@@ -42,8 +67,6 @@ namespace Sky
         public double YWorld { get; protected set; }
         public double ZWorld { get; protected set; }
 
-        public bool Clicked { get; set; }
-
         public string Name { get; protected set; }
         public string Type { get; protected set; }
         public double DistanceFromEarth { get; protected set; }
@@ -53,6 +76,10 @@ namespace Sky
         public DistanceFormat DistancesFormat { get; protected set; }
         public RadiusFormat RadiusesFormat { get; protected set; }
         public int Id { get; protected set; }
+
+        public ScreenObject Projection { get; protected set; }
+
+        public bool Clicked { get; protected set; }
 
         protected static int _numObjects = 0;
 
@@ -104,6 +131,7 @@ namespace Sky
             RadiusesFormat = radiusesFormat;
 
             Clicked = false;
+
             CalculateXYZ();
         }
 
@@ -120,7 +148,9 @@ namespace Sky
             MassesFormat = co.MassesFormat;
             DistancesFormat = co.DistancesFormat;
             RadiusesFormat = co.RadiusesFormat;
-            Clicked = co.Clicked;
+
+            Clicked = false;
+
             XWorld = co.XWorld;
             YWorld = co.YWorld;
             ZWorld = co.ZWorld;
@@ -184,6 +214,12 @@ namespace Sky
             Transformation.RotatePoint(ref newZWorld, ref newYWorld, phi);
             ZWorld = newZWorld;
             YWorld = newYWorld;
+        }
+
+        public void RotateAroundCoordinateCenter(double deg1 = 0.0, double deg2 = 0.0)
+        {
+            RotateAroundY(Transformation.DegToRad(deg1));
+            RotateAroundX(Transformation.DegToRad(deg1));
         }
 
         public double MeanDensity()
@@ -344,6 +380,58 @@ namespace Sky
         public virtual Allegro.Color GetColor()
         {
             return Allegro.MapRGB(255, 255, 255);
+        }
+
+        public void PrintInfo(IntPtr font)
+        {
+            Allegro.DrawMultilineText(font, Allegro.MapRGB(255, 255, 255), 20, 20, 400, 15, 0, ToString());
+        }
+
+        private void CreateProjection(double camAngleA, double camAngleB)
+        {
+            RotateAroundY(camAngleA);
+            RotateAroundX(camAngleB);
+
+            Projection = new ScreenObject(this);
+
+            RotateAroundX(-camAngleB);
+            RotateAroundY(-camAngleA);
+        }
+
+        public virtual void Update(Allegro.MouseState mouse, double camAngleA, double camAngleB)
+        {
+            RotateAroundCoordinateCenter(Transformation.DegToRad(0.1), Transformation.DegToRad(0.1));
+            CreateProjection(camAngleA, camAngleB);
+
+            int mx = mouse.x;
+            int my = mouse.y;
+            bool buttonPressed = (mouse.buttons & 1) != 0;
+
+            if (!buttonPressed)
+            {
+                return;
+            }
+
+            double dist = Lab5.MainClass.GetDistance(mx, my, Projection.X, Projection.Y);
+            if (dist <= Projection.Radius)
+            {
+                Clicked = true;
+            }
+            else
+            {
+                Clicked = false;
+            }
+        }
+
+        public virtual void Draw(IntPtr font)
+        {
+            Projection.Draw();
+
+            if (Clicked)
+            {
+                PrintInfo(font);
+                Allegro.DrawCircle(Projection.X, Projection.Y, Projection.Radius + 8, Allegro.MapRGB(200, 200, 0), 2.0f);
+            }
         }
     }
 }
