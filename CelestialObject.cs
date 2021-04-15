@@ -63,9 +63,9 @@ namespace Sky
 
         // Координаты тела в пространстве. генерируются автоматически на основании 
         // расстояния до тела от Земли
-        public double XWorld { get; protected set; }
-        public double YWorld { get; protected set; }
-        public double ZWorld { get; protected set; }
+        public double XWorld { get; set; }
+        public double YWorld { get; set; }
+        public double ZWorld { get; set; }
 
         public string Name { get; protected set; }
         public string Type { get; protected set; }
@@ -78,7 +78,6 @@ namespace Sky
         public int Id { get; protected set; }
 
         public ScreenObject Projection { get; protected set; }
-
         public bool Clicked { get; protected set; }
 
         protected static int _numObjects = 0;
@@ -104,7 +103,7 @@ namespace Sky
             DistancesFormat = DistanceFormat.Kilometers;
             RadiusesFormat = RadiusFormat.Kilometers;
             _mainElements = new List<string>();
-            XWorld = YWorld = ZWorld;
+            XWorld = YWorld = ZWorld = 0.0;
             Clicked = false;
         }
 
@@ -131,8 +130,6 @@ namespace Sky
             RadiusesFormat = radiusesFormat;
 
             Clicked = false;
-
-            CalculateXYZ();
         }
 
         public CelestialObject(CelestialObject co)
@@ -156,9 +153,9 @@ namespace Sky
             ZWorld = co.ZWorld;
         }
 
-        private void CalculateXYZ()
+        public virtual void CalculateXYZ()
         {
-            // Найти х, у, z в зависимости от расстояния.
+            // Найти х, у, z в зависимости от расстояния до Земли
             Random random = new Random();
 
             DistanceFormat oldDistanceFormat = DistancesFormat;

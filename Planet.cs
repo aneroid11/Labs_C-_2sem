@@ -1,15 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Numerics;
 
 namespace Sky
 {
     public class Planet : CelestialObject
     {
         public Star OrbitingAround { get; protected set; }
+        public Vector3 RotatingAxis { get; protected set; }
 
         public Planet()
         {
             OrbitingAround = new Star();
+            RotatingAxis = new Vector3(0, 0, 0);
         }
 
         public Planet(List<string> mainElements,
@@ -24,12 +27,46 @@ namespace Sky
             : base(mainElements, name, "planet", distFromEarth, radius, mass, massesFormat, distancesFormat, radiusesFormat)
         {
             OrbitingAround = orbitingAround;
+            RotatingAxis = new Vector3(0, 0, 0);
         }
 
         public Planet(Planet copy)
             : base(copy._mainElements, copy.Name, "planet", copy.DistanceFromEarth, copy.Radius, copy.Mass, copy.MassesFormat, copy.DistancesFormat, copy.RadiusesFormat)
         {
             OrbitingAround = copy.OrbitingAround;
+            RotatingAxis = copy.RotatingAxis;
+        }
+
+        public override void CalculateXYZ()
+        {
+            Random random = new Random();
+            XWorld = OrbitingAround.XWorld;
+            YWorld = OrbitingAround.YWorld;
+            ZWorld = OrbitingAround.ZWorld + (random.NextDouble() + 1.8) * 1.2E12;
+          
+
+            Vector3 vector = new Vector3((float)XWorld, (float)YWorld, (float)ZWorld);
+
+            DistanceFormat old = DistancesFormat;
+            Convert(DistanceFormat.Kilometers);
+            DistanceFromEarth = vector.Length();
+            Convert(old);
+        }
+
+        public void CalculateRotatingAxis()
+        {
+            Vector3 delta = new Vector3((float)(XWorld - OrbitingAround.XWorld), (float)(YWorld - OrbitingAround.YWorld), (float)(ZWorld - OrbitingAround.ZWorld));
+
+            // Нормализовать дельту
+            delta = delta / delta.Length();
+
+            // Найти перпендикулярный ей вектор
+            Vector3 perp = new Vector3(1, 1, 0);
+            perp.Z = -(delta.X + delta.Y) / delta.Z;
+
+            // Нормализовать его
+            perp = perp / perp.Length();
+            RotatingAxis = perp;
         }
 
         public static Planet GenerateRandom(Star orbitingAround)
@@ -47,6 +84,9 @@ namespace Sky
 
             Planet planet = new Planet(mainElems, orbitingAround, Astronomy.GenerateRandomObjectName().ToString(), random.Next(1, 10), random.Next(20, 60), random.Next(200, 10000),
                                        MassFormat.SolarMass, DistanceFormat.LightYear, RadiusFormat.SolarRadius);
+            planet.CalculateXYZ();
+            planet.CalculateRotatingAxis();
+
             return planet;
         }
 
@@ -61,6 +101,31 @@ namespace Sky
             str += "Is orbiting around " + OrbitingAround.Name;
 
             return str;
+        }
+
+        public override void Update(Allegro.MouseState mouse, double camAngleA, double camAngleB)
+        {
+            base.Update(mouse, camAngleA, camAngleB);
+
+            // Вращать вокруг звезды.
+            Vector3 delta = new Vector3((float)(XWorld - OrbitingAround.XWorld), (float)(YWorld - OrbitingAround.YWorld), (float)(ZWorld - OrbitingAround.ZWorld));
+            Vector3 rotatedDelta = new Vector3(0, 0, 0);
+
+            float sn = (float)Math.Sin(Transformation.DegToRad(0.1));
+            float cs = (float)Math.Cos(Transformation.DegToRad(0.1));
+
+            rotatedDelta += delta * cs;
+            rotatedDelta += Vector3.Cross(RotatingAxis, delta) * sn;
+            rotatedDelta += RotatingAxis * (RotatingAxis * delta) * (1 - cs);
+
+            if (rotatedDelta.Length() > delta.Length())
+            {
+                rotatedDelta *= (delta.Length() / rotatedDelta.Length());
+            }
+
+            XWorld = rotatedDelta.X + OrbitingAround.XWorld;
+            YWorld = rotatedDelta.Y + OrbitingAround.YWorld;
+            ZWorld = rotatedDelta.Z + OrbitingAround.ZWorld;
         }
     }
 }

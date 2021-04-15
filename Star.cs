@@ -58,6 +58,7 @@ namespace Sky
 
             Star star = new Star(mainElems, name, random.Next(1, 10), random.Next(20, 60), random.Next(200, 10000), 
                                  MassFormat.SolarMass, DistanceFormat.LightYear, RadiusFormat.SolarRadius, spectralType, random.Next(5000, 20000));
+            star.CalculateXYZ();
             return star;
         }
 

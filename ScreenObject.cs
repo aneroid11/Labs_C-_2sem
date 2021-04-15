@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Sky
+﻿namespace Sky
 {
     public struct ScreenObject
     {
