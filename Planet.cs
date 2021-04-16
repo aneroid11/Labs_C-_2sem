@@ -44,7 +44,6 @@ namespace Sky
             YWorld = OrbitingAround.YWorld;
             ZWorld = OrbitingAround.ZWorld + (random.NextDouble() + 1.8) * 1.2E12;
           
-
             Vector3 vector = new Vector3((float)XWorld, (float)YWorld, (float)ZWorld);
 
             DistanceFormat old = DistancesFormat;

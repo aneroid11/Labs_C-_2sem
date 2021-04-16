@@ -55,7 +55,7 @@ namespace Sky
     }
 
     // Базовый класс небесного тела
-    public abstract class CelestialObject
+    public class CelestialObject
     {
         public enum MassFormat { SolarMass, Kilograms }
         public enum RadiusFormat { SolarRadius, Kilometers }
@@ -63,9 +63,9 @@ namespace Sky
 
         // Координаты тела в пространстве. генерируются автоматически на основании 
         // расстояния до тела от Земли
-        public double XWorld { get; set; }
-        public double YWorld { get; set; }
-        public double ZWorld { get; set; }
+        public double XWorld { get; protected set; }
+        public double YWorld { get; protected set; }
+        public double ZWorld { get; protected set; }
 
         public string Name { get; protected set; }
         public string Type { get; protected set; }
@@ -397,7 +397,6 @@ namespace Sky
 
         public virtual void Update(Allegro.MouseState mouse, double camAngleA, double camAngleB)
         {
-            RotateAroundCoordinateCenter(Transformation.DegToRad(0.1), Transformation.DegToRad(0.1));
             CreateProjection(camAngleA, camAngleB);
 
             int mx = mouse.x;

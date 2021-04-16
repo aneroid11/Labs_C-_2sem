@@ -8,11 +8,16 @@ namespace Sky
     {
         public Planet OrbitingAround { get; protected set; }
         public Vector3 RotatingAxis { get; protected set; }
+        private Vector3 _oldPlanetPosition;
 
         public Satellite()
         {
             OrbitingAround = new Planet();
             RotatingAxis = new Vector3(0, 0, 0);
+
+            _oldPlanetPosition.X = (float)OrbitingAround.XWorld;
+            _oldPlanetPosition.Y = (float)OrbitingAround.YWorld;
+            _oldPlanetPosition.Z = (float)OrbitingAround.ZWorld;
         }
 
         public Satellite(List<string> mainElements,
@@ -28,6 +33,10 @@ namespace Sky
         {
             OrbitingAround = orbitingAround;
             RotatingAxis = new Vector3(0, 0, 0);
+
+            _oldPlanetPosition.X = (float)OrbitingAround.XWorld;
+            _oldPlanetPosition.Y = (float)OrbitingAround.YWorld;
+            _oldPlanetPosition.Z = (float)OrbitingAround.ZWorld;
         }
 
         public Satellite(Satellite s)
@@ -35,6 +44,10 @@ namespace Sky
         {
             OrbitingAround = s.OrbitingAround;
             RotatingAxis = s.RotatingAxis;
+
+            _oldPlanetPosition.X = (float)OrbitingAround.XWorld;
+            _oldPlanetPosition.Y = (float)OrbitingAround.YWorld;
+            _oldPlanetPosition.Z = (float)OrbitingAround.ZWorld;
         }
 
         public override void CalculateXYZ()
@@ -106,14 +119,27 @@ namespace Sky
         {
             base.Update(mouse, camAngleA, camAngleB);
 
-            // Вращать вокруг планеты.
+            // Переместить вслед за планетой.
+            Vector3 deltaPlanetPos;
+            deltaPlanetPos.X = (float)OrbitingAround.XWorld - _oldPlanetPosition.X;
+            deltaPlanetPos.Y = (float)OrbitingAround.YWorld - _oldPlanetPosition.Y;
+            deltaPlanetPos.Z = (float)OrbitingAround.ZWorld - _oldPlanetPosition.Z;
 
+            XWorld += deltaPlanetPos.X;
+            YWorld += deltaPlanetPos.Y;
+            ZWorld += deltaPlanetPos.Z;
+
+            _oldPlanetPosition.X = (float)OrbitingAround.XWorld;
+            _oldPlanetPosition.Y = (float)OrbitingAround.YWorld;
+            _oldPlanetPosition.Z = (float)OrbitingAround.ZWorld;
+
+            // Вращать вокруг планеты.
             Vector3 delta = new Vector3((float)(XWorld - OrbitingAround.XWorld), (float)(YWorld - OrbitingAround.YWorld), (float)(ZWorld - OrbitingAround.ZWorld));
             Vector3 rotatedDelta = new Vector3(0, 0, 0);
 
             float sn = (float)Math.Sin(Transformation.DegToRad(1.0));
             float cs = (float)Math.Cos(Transformation.DegToRad(1.0));
-             
+
             rotatedDelta += delta * cs;
             rotatedDelta += Vector3.Cross(RotatingAxis, delta) * sn;
             rotatedDelta += RotatingAxis * (RotatingAxis * delta) * (1 - cs);

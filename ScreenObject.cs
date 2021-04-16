@@ -43,10 +43,10 @@
             Radius = ScreenParameters.KmToPixels(radiusProjection);
             Visible = true;
 
-            if (Radius < 3)
+            if (Radius < 4)
             {
                 // Если объект слишком далеко, то проекция вырождается практически в точку
-                Radius = 3;
+                Radius = 4;
             }
 
             Color = celestial.GetColor();
