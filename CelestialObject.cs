@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.Text;
 
-// Реализовать какой-нибудь стандартный интерфейс для преобразования... (IConvertible?)
-
 namespace Sky
 {
     // Общие константы и методы для астрономических объектов
