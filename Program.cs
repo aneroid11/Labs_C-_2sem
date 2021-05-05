@@ -1,0 +1,509 @@
+﻿using System;
+using System.Collections.Generic;
+
+namespace lab7
+{
+    static class MathFunctions
+    {
+        public static uint CommonDenominator(uint a, uint b)
+        {
+            return a * b;
+        }
+
+        public static List<uint> GetPrimeNumbers(uint to)
+        {
+            if (to < 2) { return new List<uint>(); }
+
+            List<uint> primes = new List<uint>();
+
+            if (to == 2) 
+            {
+                primes.Add(2);
+                return primes;
+            }
+
+            for (uint i = 2; i < to; i++)
+            {
+                primes.Add(i);
+            }
+
+            for (int i = 0; i < primes.Count - 1; i++)
+            {
+                for (int j = i + 1; j < primes.Count; j++)
+                {
+                    if (primes[j] % primes[i] == 0)
+                    {
+                        primes.Remove(primes[j]);
+                    }
+                }
+            }
+
+            return primes;
+        }
+
+        private static void Swap(ref int a, ref int b)
+        {
+            int t = a;
+            a = b;
+            b = t;
+        }
+
+        public static int GreatestCommonDivisor(int a, int b)
+        {
+            int absA = Math.Abs(a);
+            int absB = Math.Abs(b);
+
+            if (absA < absB)
+            {
+                Swap(ref absA, ref absB);
+            }
+
+            if (absB == 0) { return absA; }
+
+            return GreatestCommonDivisor(absB, absA % absB);
+        }
+
+        public static int LeastCommonMultiple(int a, int b)
+        {
+            int absA = Math.Abs(a);
+            int absB = Math.Abs(b);
+
+            if (absA == absB)
+            {
+                return absA;
+            }
+
+            return absA * absB / GreatestCommonDivisor(absA, absB);
+        }
+    }
+
+    class Rational : IFormattable, IEquatable<Rational>, IComparable<Rational>
+    {   
+        public int Numerator { get; private set; }
+
+        public uint _denominator;
+        public uint Denominator 
+        { 
+            get
+            {
+                return _denominator;
+            }
+            private set
+            {
+                if (value == 0)
+                {
+                    throw new DivideByZeroException("Cannot assign 0 to the denominator");
+                }
+                if (value < 0)
+                {
+                    throw new ArgumentException("Denominator should be a natural number");
+                }
+
+                _denominator = value;
+            }
+        }
+
+        public Rational(int numerator = 0, uint denominator = 1)
+        {
+            if (denominator == 0)
+            {
+                throw new ArgumentException("Denominator can't be 0");
+            }
+
+            Numerator = numerator;
+            Denominator = denominator;
+        }
+
+        public Rational(Rational r)
+        {
+            Numerator = r.Numerator;
+            Denominator = r.Denominator;
+        }
+
+        public static bool TryParse(string str, out Rational r)
+        {
+            r = new Rational();
+            string format = "";
+            string[] rWords = str.Split();
+
+            if (rWords.Length > 1)
+            {
+                format = "W";
+            }
+            else if (rWords[0][0] == '(')
+            {
+                format = "B";
+            }
+            else if (char.IsDigit(rWords[0][0]))
+            {
+                format = "S";
+            }
+
+            if (format == "S" || format == "B")
+            {
+                if (format == "B")
+                {
+                    if (str[0] != '(' || str[str.Length - 1] != ')')
+                    {
+                        return false;
+                    }
+
+                    str = str.Remove(0, 1);
+                    str = str.Remove(str.Length - 1, 1);
+                }
+
+                string[] parts = str.Split('/');
+
+                if (parts.Length != 2)
+                {
+                    return false;
+                }
+
+                int numerator;
+                uint denominator;
+
+                if (!int.TryParse(parts[0], out numerator))
+                {
+                    return false;
+                }
+                if (!uint.TryParse(parts[1], out denominator))
+                {
+                    return false;
+                }
+
+                r.Numerator = numerator;
+
+                if (denominator == 0) { return false; }
+                r.Denominator = denominator;
+
+                return true;
+            }
+            if (format == "W")
+            {
+                string[] words = str.Split();
+
+                if (words.Length != 4)
+                {
+                    return false;
+                }
+
+                int numerator;
+                uint denominator;
+
+                if (!int.TryParse(words[0], out numerator))
+                {
+                    return false;
+                }
+                if (!uint.TryParse(words[3], out denominator))
+                {
+                    return false;
+                }
+
+                if (words[1] != "divided" || words[2] != "by")
+                {
+                    return false;
+                }
+
+                if (denominator == 0) { return false; }
+                r.Denominator = denominator;
+                r.Numerator = numerator;
+                return true;
+            }
+
+            return false;
+        }
+
+        public override string ToString()
+        {
+            string str = Numerator + "/" + Denominator;
+            return str;
+        }
+
+        public string ToString(string format)
+        {
+            if (string.IsNullOrEmpty(format)) 
+            {
+                return ToString();
+            }
+
+            switch (format)
+            {
+                case "S":
+                    return ToString();
+                case "B":
+                    return "(" + Numerator + "/" + Denominator + ")";
+                case "W":
+                    return Numerator + " divided by " + Denominator;
+                default:
+                    throw new FormatException("Not supported format: " + format);
+            }
+        }
+
+        public string ToString(string format, IFormatProvider formatProvider)
+        {
+            return ToString(format);
+        }
+
+        public void Reduce()
+        {
+            if (Numerator == Denominator)
+            {
+                Numerator = 1;
+                Denominator = 1;
+                return;
+            }
+
+            List<uint> primes;
+
+            if ((uint)Math.Abs(Numerator) > Denominator)
+            {
+                primes = MathFunctions.GetPrimeNumbers((uint)Math.Abs(Numerator)); 
+            }
+            else
+            {
+                primes = MathFunctions.GetPrimeNumbers(Denominator);
+            }
+
+            foreach (uint p in primes)
+            {
+                while (Numerator % p == 0 && Denominator % p == 0)
+                {
+                    Numerator /= (int)p;
+                    Denominator /= p;
+                }
+            }
+        }
+
+        public static void ToCommonDenominator(Rational r1, Rational r2)
+        {
+            if (r1.Denominator == r2.Denominator) { return; }
+
+            uint cd = MathFunctions.CommonDenominator(r1.Denominator, r2.Denominator);
+            uint coef1 = cd / r1.Denominator;
+            uint coef2 = cd / r2.Denominator;
+
+            r1.Numerator *= (int)coef1;
+            r1.Denominator *= coef1;
+
+            r2.Numerator *= (int)coef2;
+            r2.Denominator *= coef2;
+        }
+
+        public static Rational operator +(Rational r1)
+        {
+            return r1;
+        }
+
+        public static Rational operator -(Rational r1)
+        {
+            return new Rational(-r1.Numerator, r1.Denominator);
+        }
+
+        public static Rational operator +(Rational r1, Rational r2)
+        {
+            Rational result = new Rational();
+            result.Denominator = MathFunctions.CommonDenominator(r1.Denominator, r2.Denominator);
+            result.Numerator = r1.Numerator * ((int)result.Denominator / (int)r1.Denominator) + 
+                               r2.Numerator * ((int)result.Denominator / (int)r2.Denominator);
+
+            result.Reduce();
+
+            return result;
+        }
+
+        public static Rational operator -(Rational r1, Rational r2)
+        {
+            return r1 + (-r2);
+        }
+
+        public static Rational operator *(Rational r1, Rational r2)
+        {
+            Rational result = new Rational();
+            result.Numerator = r1.Numerator * r2.Numerator;
+            result.Denominator = r1.Denominator * r2.Denominator;
+            result.Reduce();
+
+            return result;
+        }
+
+        public static Rational operator /(Rational r1, Rational r2)
+        {
+            if (r2.Numerator == 0)
+            {
+                throw new DivideByZeroException();
+            }
+
+            Rational factor = new Rational();
+            bool negative = r2.Numerator < 0;
+
+            if (negative)
+            {
+                factor.Denominator = (uint)-r2.Numerator;
+            }
+            else
+            {
+                factor.Denominator = (uint)r2.Numerator;
+            }
+
+            factor.Numerator = (int)r2.Denominator;
+            if (negative) { return -(r1 * factor); }
+
+            return r1 * factor;
+        }
+
+        public static bool operator == (Rational r1, Rational r2)
+        {
+            r1.Reduce();
+            r2.Reduce();
+
+            return r1.Numerator == r2.Numerator && r1.Denominator == r2.Denominator;
+        }
+
+        public static bool operator !=(Rational r1, Rational r2)
+        {
+            return !(r1 == r2);
+        }
+
+        public static bool operator >(Rational r1, Rational r2)
+        {
+            if (r1.Numerator < 0 && r2.Numerator >= 0) { return false; }
+            if (r2.Numerator < 0 && r1.Numerator >= 0) { return true; }
+
+            ToCommonDenominator(r1, r2);
+            if (r1.Numerator > r2.Numerator) 
+            {
+                r1.Reduce();
+                r2.Reduce();
+                return true; 
+            }
+
+            return false;
+        }
+
+        public static bool operator <(Rational r1, Rational r2)
+        {
+            return r2 > r1 && r1 != r2;
+        }
+
+        public static bool operator >=(Rational r1, Rational r2)
+        {
+            return (r1 > r2) || (r1 == r2);
+        }
+
+        public static bool operator <=(Rational r1, Rational r2)
+        {
+            return (r1 < r2) || (r1 == r2);
+        }
+
+        bool IEquatable<Rational>.Equals(Rational other)
+        {
+            other.Reduce();
+            return other == this;
+        }
+
+        public override bool Equals(object obj)
+        {
+            Rational r = obj as Rational;
+
+            if (r == null)
+            {
+                return false;
+            }
+
+            return r == this;
+        }
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
+
+        public int CompareTo(Rational other)
+        {
+            if (other > this)
+            {
+                return 1;
+            }
+            if (other < this)
+            {
+                return -1;
+            }
+            return 0;
+        }
+
+        public static explicit operator float(Rational r)
+        {
+            return (float)r.Numerator / r.Denominator;
+        }
+
+        public static explicit operator double(Rational r)
+        {
+            return (double)r.Numerator / r.Denominator;
+        }
+
+        public static explicit operator decimal(Rational r)
+        {
+            return (decimal)r.Numerator / r.Denominator;
+        }
+
+        public static explicit operator int(Rational r)
+        {
+            return r.Numerator / (int)r.Denominator;
+        }
+
+        public static explicit operator long(Rational r)
+        {
+            return r.Numerator / r.Denominator;
+        }
+    }
+
+    class MainClass
+    {
+        public static int Main(string[] args)
+        {
+            List<Rational> rationals = new List<Rational>();
+
+            Console.WriteLine("Enter rational numbers in one of those formats:");
+            Console.WriteLine("a/b");
+            Console.WriteLine("(a/b)");
+            Console.WriteLine("a divided by b");
+            Console.WriteLine("Enter - to stop");
+            string str = Console.ReadLine();
+
+            while (str != "-")
+            {
+                Rational rational;
+
+                while (!Rational.TryParse(str, out rational))
+                {
+                    Console.WriteLine("Invalid input. Please try again:");
+                    str = Console.ReadLine();
+                }
+
+                rationals.Add(rational);
+
+                str = Console.ReadLine();
+            }
+
+            Console.WriteLine("You entered: ");
+            foreach (Rational r in rationals)
+            {
+                Console.WriteLine(r.ToString("B"));
+            }
+
+            rationals.Sort();
+
+            Console.WriteLine("Sorted rational numbers:");
+            Rational sum = new Rational(0, 1);
+
+            foreach (Rational r in rationals)
+            {
+                Console.WriteLine(r.ToString("S"));
+                sum += r;
+            }
+
+            Console.WriteLine("Sum of all numbers: " + sum.ToString("W"));
+            return 0;
+        }
+    }
+}
