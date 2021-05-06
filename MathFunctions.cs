@@ -1,39 +1,42 @@
 ﻿using System;
 
-static class MathFunctions
+namespace lab7
 {
-    private static void Swap(ref int a, ref int b)
+    static class MathFunctions
     {
-        int t = a;
-        a = b;
-        b = t;
-    }
-
-    public static int GreatestCommonDivisor(int a, int b)
-    {
-        int absA = Math.Abs(a);
-        int absB = Math.Abs(b);
-
-        if (absA < absB)
+        private static void Swap(ref int a, ref int b)
         {
-            Swap(ref absA, ref absB);
+            int t = a;
+            a = b;
+            b = t;
         }
 
-        if (absB == 0) { return absA; }
-
-        return GreatestCommonDivisor(absB, absA % absB);
-    }
-
-    public static int LeastCommonMultiple(int a, int b)
-    {
-        int absA = Math.Abs(a);
-        int absB = Math.Abs(b);
-
-        if (absA == absB)
+        public static int GreatestCommonDivisor(int a, int b)
         {
-            return absA;
+            int absA = Math.Abs(a);
+            int absB = Math.Abs(b);
+
+            if (absA < absB)
+            {
+                Swap(ref absA, ref absB);
+            }
+
+            if (absB == 0) { return absA; }
+
+            return GreatestCommonDivisor(absB, absA % absB);
         }
 
-        return absA * absB / GreatestCommonDivisor(absA, absB);
+        public static int LeastCommonMultiple(int a, int b)
+        {
+            int absA = Math.Abs(a);
+            int absB = Math.Abs(b);
+
+            if (absA == absB)
+            {
+                return absA;
+            }
+
+            return absA * absB / GreatestCommonDivisor(absA, absB);
+        }
     }
 }
