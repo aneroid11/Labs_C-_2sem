@@ -39,6 +39,7 @@ namespace lab7
 
             Console.WriteLine("Sorting");
             rationals.Sort();
+            Console.WriteLine("Sorted");
 
             Console.WriteLine("Sorted rational numbers:");
             Rational sum = new Rational(0, 1);
