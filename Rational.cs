@@ -123,6 +123,12 @@ namespace lab7
         public static bool TryParse(string str, out Rational r)
         {
             r = new Rational();
+
+            if (string.IsNullOrEmpty(str))
+            {
+                return false;
+            }
+
             string format = "";
             string[] rWords = str.Split();
 
@@ -415,7 +421,7 @@ namespace lab7
 
         public override int GetHashCode()
         {
-            return base.GetHashCode();
+            return Numerator ^ (int)Denominator;
         }
 
         public int CompareTo(Rational other)
