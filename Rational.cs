@@ -1,46 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 
 namespace lab7
 {
     static class MathFunctions
     {
-        public static uint CommonDenominator(uint a, uint b)
-        {
-            return a * b;
-        }
-
-        public static List<uint> GetPrimeNumbers(uint to)
-        {
-            if (to < 2) { return new List<uint>(); }
-
-            List<uint> primes = new List<uint>();
-
-            if (to == 2)
-            {
-                primes.Add(2);
-                return primes;
-            }
-
-            for (uint i = 2; i < to; i++)
-            {
-                primes.Add(i);
-            }
-
-            for (int i = 0; i < primes.Count - 1; i++)
-            {
-                for (int j = i + 1; j < primes.Count; j++)
-                {
-                    if (primes[j] % primes[i] == 0)
-                    {
-                        primes.Remove(primes[j]);
-                    }
-                }
-            }
-
-            return primes;
-        }
-
         private static void Swap(ref int a, ref int b)
         {
             int t = a;
@@ -259,32 +222,16 @@ namespace lab7
                 return;
             }
 
-            List<uint> primes;
-
-            if ((uint)Math.Abs(Numerator) > Denominator)
-            {
-                primes = MathFunctions.GetPrimeNumbers((uint)Math.Abs(Numerator));
-            }
-            else
-            {
-                primes = MathFunctions.GetPrimeNumbers(Denominator);
-            }
-
-            foreach (uint p in primes)
-            {
-                while (Numerator % p == 0 && Denominator % p == 0)
-                {
-                    Numerator /= (int)p;
-                    Denominator /= p;
-                }
-            }
+            int gcd = MathFunctions.GreatestCommonDivisor(Numerator, (int)Denominator);
+            Numerator /= gcd;
+            Denominator /= (uint)gcd;
         }
 
         public static void ToCommonDenominator(Rational r1, Rational r2)
         {
             if (r1.Denominator == r2.Denominator) { return; }
 
-            uint cd = MathFunctions.CommonDenominator(r1.Denominator, r2.Denominator);
+            uint cd = (uint)MathFunctions.LeastCommonMultiple((int)r1.Denominator, (int)r2.Denominator);
             uint coef1 = cd / r1.Denominator;
             uint coef2 = cd / r2.Denominator;
 
@@ -308,7 +255,7 @@ namespace lab7
         public static Rational operator +(Rational r1, Rational r2)
         {
             Rational result = new Rational();
-            result.Denominator = MathFunctions.CommonDenominator(r1.Denominator, r2.Denominator);
+            result.Denominator = (uint)MathFunctions.LeastCommonMultiple((int)r1.Denominator, (int)r2.Denominator);
             result.Numerator = r1.Numerator * ((int)result.Denominator / (int)r1.Denominator) +
                                r2.Numerator * ((int)result.Denominator / (int)r2.Denominator);
 
