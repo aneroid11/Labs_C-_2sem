@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 
 namespace lab7
-{ 
+{
     class MainClass
     {
         public static int Main(string[] args)
@@ -39,7 +39,6 @@ namespace lab7
 
             Console.WriteLine("Sorting");
             rationals.Sort();
-            Console.WriteLine("Sorted");
 
             Console.WriteLine("Sorted rational numbers:");
             Rational sum = new Rational(0, 1);
@@ -49,8 +48,9 @@ namespace lab7
                 Console.WriteLine(r.ToString("S"));
                 sum += r;
             }
+            
+            Console.WriteLine("Sum of all numbers: " + sum + " = " + (double)sum);
 
-            Console.WriteLine("Sum of all numbers: " + (double)sum);
             return 0;
         }
     }

@@ -285,14 +285,11 @@ namespace lab7
             if (r2.Numerator < 0 && r1.Numerator >= 0) { return true; }
 
             ToCommonDenominator(r1, r2);
-            if (r1.Numerator > r2.Numerator)
-            {
-                r1.Reduce();
-                r2.Reduce();
-                return true;
-            }
+            bool greater = r1.Numerator > r2.Numerator;
 
-            return false;
+            r1.Reduce();
+            r2.Reduce();
+            return greater;
         }
 
         public static bool operator <(Rational r1, Rational r2)
@@ -310,7 +307,7 @@ namespace lab7
             return (r1 < r2) || (r1 == r2);
         }
 
-        bool IEquatable<Rational>.Equals(Rational other)
+        public bool Equals(Rational other)
         {
             other.Reduce();
             return other == this;
