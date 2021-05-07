@@ -48,8 +48,9 @@ namespace lab7
                 Console.WriteLine(r.ToString("S"));
                 sum += r;
             }
-            
-            Console.WriteLine("Sum of all numbers: " + sum + " = " + (double)sum);
+
+            double sumDouble = sum;
+            Console.WriteLine("Sum of all numbers: " + sum + " = " + sumDouble);
 
             return 0;
         }

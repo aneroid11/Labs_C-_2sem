@@ -65,7 +65,7 @@ namespace lab7
             {
                 format = "B";
             }
-            else if (char.IsDigit(rWords[0][0]))
+            else
             {
                 format = "S";
             }
@@ -91,21 +91,21 @@ namespace lab7
                 }
 
                 int numerator;
-                uint denominator;
+                int denominator;
 
                 if (!int.TryParse(parts[0], out numerator))
                 {
                     return false;
                 }
-                if (!uint.TryParse(parts[1], out denominator))
+                if (!int.TryParse(parts[1], out denominator))
                 {
                     return false;
                 }
-
                 r.Numerator = numerator;
+                r.Numerator *= Math.Sign(denominator);
 
                 if (denominator == 0) { return false; }
-                r.Denominator = denominator;
+                r.Denominator = (uint)Math.Abs(denominator);
 
                 return true;
             }
@@ -119,13 +119,13 @@ namespace lab7
                 }
 
                 int numerator;
-                uint denominator;
+                int denominator;
 
                 if (!int.TryParse(words[0], out numerator))
                 {
                     return false;
                 }
-                if (!uint.TryParse(words[3], out denominator))
+                if (!int.TryParse(words[3], out denominator))
                 {
                     return false;
                 }
@@ -136,8 +136,9 @@ namespace lab7
                 }
 
                 if (denominator == 0) { return false; }
-                r.Denominator = denominator;
-                r.Numerator = numerator;
+                r.Denominator = (uint)Math.Abs(denominator);
+                r.Numerator = numerator; 
+                r.Numerator *= Math.Sign(denominator);
                 return true;
             }
 
@@ -343,12 +344,12 @@ namespace lab7
             return 0;
         }
 
-        public static explicit operator float(Rational r)
+        public static implicit operator float(Rational r)
         {
             return (float)r.Numerator / r.Denominator;
         }
 
-        public static explicit operator double(Rational r)
+        public static implicit operator double(Rational r)
         {
             return (double)r.Numerator / r.Denominator;
         }
