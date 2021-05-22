@@ -205,27 +205,8 @@ namespace Planetarium
             }
         }
 
-        public static void TestSystem()
-        {
-            OperatingSystem operatingSystem = Environment.OSVersion;
-
-            string osStr = operatingSystem.VersionString;
-            string osName = osStr.Split()[0];
-
-            if (osName == "Unix")
-            {
-                Console.WriteLine("Linux");
-            }
-            else
-            {
-                Console.WriteLine("Windows");
-            }
-        }
-
         public static int Main(string[] args)
         {
-            TestSystem();
-
             List<CelestialObject> celestials = GenerateCelestials(999);
 
             IntPtr display = InitAllegro(ScreenParameters.screenWidth, ScreenParameters.screenHeight);
